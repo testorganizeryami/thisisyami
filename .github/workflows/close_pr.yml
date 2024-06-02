@@ -1,0 +1,33 @@
+name: Close Daily Release Branch
+
+on:
+  schedule:
+    - cron: '0 0 * * *' 
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set daily branch name
+        id: set_branch_name
+        run: |
+          BRANCH_NAME="release/$(date --date 'yesterday' +%Y-%m-%d)"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Git Setting
+        run: |
+          git config --global user.email "dkdidudtn@gmail.com"
+          git config --global user.name "Ci Schedule Bot"
+          git remote set-url origin "https://github.com/testorganizeryami/thisisyami.git"
+
+      - name: Close release branch and pr
+        run: |
+          git fetch origin ${{ steps.set_branch_name.outputs.branch_name }}
+          git push -d origin ${{ steps.set_branch_name.outputs.branch_name }}
