@@ -2,7 +2,7 @@ name: Close Daily Release Branch
 
 on:
   schedule:
-    - cron: '0 0 * * *' 
+    - cron: '40 12 * * *' 
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
       - name: Set daily branch name
         id: set_branch_name
         run: |
-          BRANCH_NAME="release/$(date --date 'yesterday' +%Y-%m-%d)"
+          BRANCH_NAME="release/$(date --date 'tomorrow' +%Y-%m-%d)"
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
       - name: Git Setting
